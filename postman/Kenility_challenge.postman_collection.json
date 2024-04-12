@@ -1,0 +1,18 @@
+{
+	"info": {
+		"_postman_id": "e1913a6f-f441-44b9-82c4-c8dae2132ca6",
+		"name": "Kenility_challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11463824"
+	},
+	"item": [
+		{
+			"name": "Autocompletion",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

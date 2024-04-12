@@ -16,7 +16,7 @@ public class LobAddressController {
     @Autowired
     IAddressService addressService;
 
-    @Secured("ROLE_ADMIN")
+    @Secured("ADMIN")
     @PostMapping("/autocompletion")
     public ResponseEntity<String> autoCompleteAddress(@RequestBody AddressRequest addressRequest) {
         return addressService.autoComplete(addressRequest);
