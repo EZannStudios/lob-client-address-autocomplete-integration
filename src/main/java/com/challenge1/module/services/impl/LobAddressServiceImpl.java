@@ -5,7 +5,6 @@ import com.challenge1.module.services.IAddressService;
 import com.lob.api.ApiClient;
 import com.lob.api.ApiException;
 import com.lob.api.client.UsAutocompletionsApi;
-import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.client.model.UsAutocompletions;
 import org.openapitools.client.model.UsAutocompletionsWritable;
@@ -15,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LobAddressServiceImpl implements IAddressService {
+
+    private static final String BAD_REQUEST_ERROR = "address_prefix is required";
+    private static final String INTERNAL_API_ERROR = "Cannot process address: \n";
 
     @Autowired
     ApiClient lobClient;
@@ -26,7 +28,7 @@ public class LobAddressServiceImpl implements IAddressService {
     @Override
     public ResponseEntity<String> autoComplete(AddressRequest addressRequest) {
         if (isAddressPrefixEmpty(addressRequest)) {
-            return ResponseEntity.badRequest().body("address_prefix is required");
+            return ResponseEntity.badRequest().body(BAD_REQUEST_ERROR);
         }
         UsAutocompletionsApi apiInstance = new UsAutocompletionsApi(lobClient);
         UsAutocompletionsWritable usAutocompletionsWritable = getUsAutocompletionsWritable(addressRequest);
@@ -35,7 +37,7 @@ public class LobAddressServiceImpl implements IAddressService {
             usAutocompletions = apiInstance.autocomplete(usAutocompletionsWritable);
         } catch (ApiException e) {
             return ResponseEntity.status(e.getCode())
-                    .body("Cannot process address: \n" + usAutocompletionsWritable
+                    .body(INTERNAL_API_ERROR + usAutocompletionsWritable
                             + "\n" + e.getMessage());
         }
         return ResponseEntity.ok(usAutocompletions.getSuggestions().toString());
