@@ -1,0 +1,19 @@
+spring:
+  security:
+    user:
+      name: demo-username
+      password: demo-password
+  application:
+    name: example
+  profiles:
+    active: dev
+server:
+  port: 8088
+logging:
+  level:
+    ROOT: INFO
+lob:
+  api:
+    key: live_pub_e71fae5373ec3c938e7500cc0afdb1f
+    base:
+      url: https://api.lob.com/v1
