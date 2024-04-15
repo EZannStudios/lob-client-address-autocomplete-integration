@@ -1,5 +1,6 @@
 package com.challenge1.module.utils;
 
+import com.challenge1.module.models.AddressRequest;
 import com.lob.api.ApiClient;
 import com.lob.api.auth.HttpBasicAuth;
 
@@ -11,11 +12,21 @@ public class TestUtils {
 
     public static final String TEST_API_KEY = "test_pub_3c9c401e55927501b9ce3c443bb6b3a";
 
+    public static final String BAD_API_KEY = "bad_pub_unauthorized";
+
     public static final String ONE_RESULT_REQUEST = "1 suggestion";
 
     public static final String MULTIPLE_RESULT_REQUEST = "2 sugg";
 
     public static final String BAD_REQUEST_ERROR = "address_prefix is required";
+
+    public static final String UNAUTHORIZED_ERROR = "Cannot process address: \n" +
+            "AddressRequest(addressPrefix=1 suggestion, city=null, state=null, zipCode=null, geoIpSort=false)\n" +
+            "Missing authentication";
+
+    public static final String API_KEY_NOT_VALID_ERROR = "Cannot process address: \n" +
+            "AddressRequest(addressPrefix=1 suggestion, city=null, state=null, zipCode=null, geoIpSort=false)\n" +
+            "Your API key is not valid. Please sign up on lob.com to get a valid api key.";
 
     public static final String MOCKED_ADDRESSES_RESPONSE = "[{\n" +
             "    primaryLine: 185 BRANNAN ST\n" +
@@ -95,18 +106,8 @@ public class TestUtils {
             "    _object: us_autocompletion\n" +
             "}]";
 
-    public static final String UNAUTHORIZED_ERROR = "Cannot process address: \n" +
-            "{\n" +
-            "    addressPrefix: 1 suggestion\n" +
-            "    city: null\n" +
-            "    state: null\n" +
-            "    zipCode: null\n" +
-            "    geoIpSort: false\n" +
-            "}\n" +
-            "Missing authentication";
-
     public static ApiClient lobTestClient() {
-        ApiClient lobTestClient = com.lob.api.Configuration.getBadConfigForIntegration();
+        ApiClient lobTestClient = com.lob.api.Configuration.getConfigForIntegration();
         lobTestClient.setBasePath(LOB_API_BASEURL);
         HttpBasicAuth basicAuth = (HttpBasicAuth) lobTestClient.getAuthentication(AUTH_MODE);
         basicAuth.setUsername(TEST_API_KEY);
@@ -115,8 +116,19 @@ public class TestUtils {
     }
 
     public static ApiClient badLobTestClient() {
-        ApiClient lobTestClient = com.lob.api.Configuration.getConfigForIntegration();
+        ApiClient badLobTestClient = com.lob.api.Configuration.getBadConfigForIntegration();
+        badLobTestClient.setBasePath(LOB_API_BASEURL);
+        HttpBasicAuth basicAuth = (HttpBasicAuth) badLobTestClient.getAuthentication(AUTH_MODE);
+        basicAuth.setUsername(BAD_API_KEY);
+        return badLobTestClient;
+    }
 
-        return lobTestClient;
+    public static AddressRequest getTestAddressRequest(String addressPrefix) {
+        AddressRequest addressRequest = new AddressRequest();
+        addressRequest.setAddressPrefix(addressPrefix);
+        addressRequest.setCity("San Francisco");
+        addressRequest.setState("CA");
+        addressRequest.setZipCode("94107");
+        return addressRequest;
     }
 }

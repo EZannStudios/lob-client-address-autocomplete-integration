@@ -12,7 +12,6 @@ public class TestConfig {
     @Bean
     @Primary
     public ApiClient lobTestClient() {
-        ApiClient lobTestClient = TestUtils.lobTestClient();
-        return lobTestClient;
+        return TestUtils.lobTestClient();
     }
 }
