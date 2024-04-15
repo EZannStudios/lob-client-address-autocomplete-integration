@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/lobAddresses")
 public class LobAddressController {
-    @Autowired
     IAddressService addressService;
+
+    @Autowired
+    public LobAddressController(IAddressService addressService) {
+        this.addressService = addressService;
+    }
 
     @Secured("ADMIN")
     @PostMapping("/autocompletion")

@@ -31,11 +31,7 @@ public class LobAddressControllerTest {
 
     @Test
     public void testAutoCompleteAddress_Success() {
-        AddressRequest addressRequest = new AddressRequest();
-        addressRequest.setAddressPrefix("123 Main St");
-        addressRequest.setCity("San Francisco");
-        addressRequest.setState("CA");
-        addressRequest.setZipCode("94107");
+        AddressRequest addressRequest = TestUtils.getTestAddressRequest("123 Main St");
 
         when(addressService.autoComplete(addressRequest))
                 .thenReturn(new ResponseEntity<>(TestUtils.MOCKED_ADDRESSES_RESPONSE, HttpStatus.OK));
@@ -50,39 +46,46 @@ public class LobAddressControllerTest {
 
     @Test
     public void testAutoCompleteAddressPrefixEmpty_BadRequest() {
-        AddressRequest addressRequest = new AddressRequest();
-        addressRequest.setAddressPrefix("");
-        addressRequest.setCity("San Francisco");
-        addressRequest.setState("CA");
-        addressRequest.setZipCode("94107");
+        AddressRequest addressRequest = TestUtils.getTestAddressRequest("");
 
         when(addressService.autoComplete(addressRequest))
-                .thenReturn(new ResponseEntity<>("address_prefix is required", HttpStatus.BAD_REQUEST));
+                .thenReturn(new ResponseEntity<>(TestUtils.BAD_REQUEST_ERROR, HttpStatus.BAD_REQUEST));
 
         ResponseEntity<String> response = lobAddressController.autoCompleteAddress(addressRequest);
 
         verify(addressService, times(1)).autoComplete(addressRequest);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("address_prefix is required", response.getBody());
+        assertEquals(TestUtils.BAD_REQUEST_ERROR, response.getBody());
     }
 
     @Test
     public void testAutoCompleteAddressPrefixNull_BadRequest() {
-        AddressRequest addressRequest = new AddressRequest();
-        addressRequest.setAddressPrefix(null);
-        addressRequest.setCity("San Francisco");
-        addressRequest.setState("CA");
-        addressRequest.setZipCode("94107");
+        AddressRequest addressRequest = TestUtils.getTestAddressRequest(null);
 
         when(addressService.autoComplete(addressRequest))
-                .thenReturn(new ResponseEntity<>("address_prefix is required", HttpStatus.BAD_REQUEST));
+                .thenReturn(new ResponseEntity<>(TestUtils.BAD_REQUEST_ERROR, HttpStatus.BAD_REQUEST));
 
         ResponseEntity<String> response = lobAddressController.autoCompleteAddress(addressRequest);
 
         verify(addressService, times(1)).autoComplete(addressRequest);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("address_prefix is required", response.getBody());
+        assertEquals(TestUtils.BAD_REQUEST_ERROR, response.getBody());
+    }
+
+    @Test
+    public void testAutoCompleteAddressWithBadApiKey_Unauthorized() {
+        AddressRequest addressRequest = TestUtils.getTestAddressRequest("123 Main St");
+
+        when(addressService.autoComplete(addressRequest))
+                .thenReturn(new ResponseEntity<>(TestUtils.API_KEY_NOT_VALID_ERROR, HttpStatus.UNAUTHORIZED));
+
+        ResponseEntity<String> response = lobAddressController.autoCompleteAddress(addressRequest);
+
+        verify(addressService, times(1)).autoComplete(addressRequest);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals(TestUtils.API_KEY_NOT_VALID_ERROR, response.getBody());
     }
 }
