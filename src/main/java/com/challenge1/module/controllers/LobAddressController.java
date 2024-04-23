@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/lobAddresses")
 public class LobAddressController {
-    IAddressService addressService;
+    private final IAddressService addressService;
 
     @Autowired
     public LobAddressController(IAddressService addressService) {
